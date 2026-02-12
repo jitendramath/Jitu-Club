@@ -1,0 +1,22 @@
+{
+  "name": "aura-syncer-v3",
+  "version": "3.0.0",
+  "description": "API Syncer for Aura Analyze 3.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "lottery",
+    "syncer",
+    "firebase"
+  ],
+  "author": "Jitendra Singh",
+  "license": "ISC",
+  "dependencies": {
+    "firebase-admin": "^11.11.1"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}

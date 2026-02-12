@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 10, 10, 15;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  -webkit-tap-highlight-color: transparent; /* मोबाइल पर टच हाईलाइट हटाने के लिए */
+}
+
+@layer components {
+  /* Apple-style Glass Card */
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-[28px] shadow-2xl;
+  }
+
+  /* Premium Glowing Button */
+  .btn-primary {
+    @apply bg-white text-black font-semibold py-3 px-6 rounded-2xl active:scale-95 transition-all duration-200;
+  }
+
+  /* Stats Grid Item */
+  .stats-item {
+    @apply flex flex-col items-center justify-center p-3 border-r border-b border-white/5 last:border-none;
+  }
+}
+
+/* Smooth Scrolling for History List */
+* {
+  scrollbar-width: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Custom Table Row Animation */
+.row-enter {
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
