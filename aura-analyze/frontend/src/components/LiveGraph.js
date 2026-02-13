@@ -14,7 +14,7 @@ import {
 const LiveGraph = ({ history }) => {
   // ग्राफ के लिए पिछले 100 राउंड्स का डेटा तैयार करें
   const graphData = [...history]
-    .slice(0, 100)
+    .slice(0, 20)
     .reverse() // पुराने से नए की तरफ दिखाने के लिए
     .map(item => ({
       period: item.period.slice(-3), // सिर्फ आखरी 3 अंक
