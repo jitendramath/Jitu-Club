@@ -5,8 +5,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Aura Analyze 3.0",
-  description: "Premium WinGo Data Analytics Dashboard",
+  title: "Aura Analyze",
+  description: "Premium Terminal",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0",
 };
 
 export default function RootLayout({ children }) {
