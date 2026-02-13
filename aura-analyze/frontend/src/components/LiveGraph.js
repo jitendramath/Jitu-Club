@@ -23,14 +23,14 @@ const LiveGraph = ({ history }) => {
   return (
     <div className="h-[250px] w-full">
       <ResponsiveContainer width="100%" height="100%">
+        {/* मार्जिन और ग्राफ लॉजिक (कमेंट्स अब यहाँ सुरक्षित हैं) */}
         <LineChart 
           data={graphData} 
-          {/* मार्जिन को बैलेंस किया ताकि नंबर्स अंदर दिखें */}
           margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
         >
           <defs>
             <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
-              {/* 0 से 9 के स्केल में 5 नंबर लगभग 44.4% की ऊंचाई पर होता है */}
+              {/* 5 नंबर (Neutral) 44.4% की ऊंचाई पर है */}
               <stop offset="0%" stopColor="#22c55e" stopOpacity={1} />
               <stop offset="44.4%" stopColor="#22c55e" stopOpacity={1} />
               <stop offset="44.4%" stopColor="#ef4444" stopOpacity={1} />
@@ -38,7 +38,6 @@ const LiveGraph = ({ history }) => {
             </linearGradient>
           </defs>
 
-          {/* बहुत बारीक ग्रिड लाइन्स */}
           <CartesianGrid 
             strokeDasharray="0" 
             vertical={false} 
@@ -52,8 +51,8 @@ const LiveGraph = ({ history }) => {
             ticks={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]} 
             axisLine={false}
             tickLine={false}
-            {/* नंबर्स को ग्राफ के अंदर खिसकाया (dx: 20) ताकि लेफ्ट स्पेस बचे */}
-            tick={{ fill: 'rgba(255,255,255,0.15)', fontSize: 9, dx: 20 }}
+            {/* dx: 20 से नंबर्स ग्राफ के फ्रेम के अंदर आ जाएंगे */}
+            tick={{ fill: 'rgba(255,255,255,0.2)', fontSize: 9, dx: 20 }}
           />
 
           <Tooltip 
@@ -66,7 +65,6 @@ const LiveGraph = ({ history }) => {
             itemStyle={{ color: '#fff' }}
           />
 
-          {/* 5 नंबर की स्पेशल 'Neutral' लाइन */}
           <ReferenceLine 
             y={5} 
             stroke="rgba(255,255,255,0.2)" 
@@ -82,7 +80,6 @@ const LiveGraph = ({ history }) => {
             dot={{ r: 2, fill: '#fff', strokeWidth: 0, opacity: 0.3 }}
             activeDot={{ r: 5, fill: '#fff', strokeWidth: 0 }}
             animationDuration={1000}
-            {/* प्रीमियम ग्लो इफ़ेक्ट */}
             style={{ filter: 'drop-shadow(0px 0px 8px rgba(255, 255, 255, 0.1))' }}
           />
         </LineChart>
