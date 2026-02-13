@@ -23,14 +23,12 @@ const LiveGraph = ({ history }) => {
   return (
     <div className="h-[250px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        {/* मार्जिन और ग्राफ लॉजिक (कमेंट्स अब यहाँ सुरक्षित हैं) */}
         <LineChart 
           data={graphData} 
           margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
         >
           <defs>
             <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
-              {/* 5 नंबर (Neutral) 44.4% की ऊंचाई पर है */}
               <stop offset="0%" stopColor="#22c55e" stopOpacity={1} />
               <stop offset="44.4%" stopColor="#22c55e" stopOpacity={1} />
               <stop offset="44.4%" stopColor="#ef4444" stopOpacity={1} />
@@ -51,7 +49,6 @@ const LiveGraph = ({ history }) => {
             ticks={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]} 
             axisLine={false}
             tickLine={false}
-            {/* dx: 20 से नंबर्स ग्राफ के फ्रेम के अंदर आ जाएंगे */}
             tick={{ fill: 'rgba(255,255,255,0.2)', fontSize: 9, dx: 20 }}
           />
 
