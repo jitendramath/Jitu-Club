@@ -75,12 +75,12 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="relative min-h-screen bg-[#000000] overflow-hidden selection:bg-blue-500/30">
+    <main className="relative min-h-screen overflow-hidden selection:bg-blue-500/30">
       {/* ✨ Premium Blurry Blobs (Background) */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[70%] h-[40%] bg-blue-600/25 blur-[80px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[10%] right-[-10%] w-[60%] h-[50%] bg-purple-600/25 blur-[70px] rounded-full" />
-        <div className="absolute top-[40%] left-[20%] w-[30%] h-[30%] bg-indigo-500/20 blur-[65px] rounded-full" />
+        <div className="absolute top-[-10%] left-[-10%] w-[70%] h-[40%] bg-blue-600/10 blur-[80px] rounded-full" />
+        <div className="absolute bottom-[10%] right-[-10%] w-[60%] h-[50%] bg-purple-600/20 blur-[70px] rounded-full" />
+        <div className="absolute top-[40%] left-[20%] w-[30%] h-[30%] bg-indigo-500/15 blur-[65px] rounded-full" />
       </div>
 
       {/* Main Content Area (Locked to Mobile Width) */}
@@ -88,7 +88,7 @@ export default function Dashboard() {
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="relative z-10 max-w-md mx-auto px-1 pt-3 pb-10 space-y-7"
+          className="relative z-10 max-w-md mx-auto pt-3 pb-10 space-y-7"
         >
           {/* Minimalist Apple Header */}
           <header className="flex justify-between items-center mb-2">
