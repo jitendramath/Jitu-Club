@@ -78,9 +78,9 @@ export default function Dashboard() {
     <main className="relative min-h-screen bg-[#000000] overflow-hidden selection:bg-blue-500/30">
       {/* ✨ Premium Blurry Blobs (Background) */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[70%] h-[40%] bg-blue-600/20 blur-[120px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[10%] right-[-10%] w-[60%] h-[50%] bg-purple-600/15 blur-[100px] rounded-full" />
-        <div className="absolute top-[40%] left-[20%] w-[30%] h-[30%] bg-indigo-500/10 blur-[80px] rounded-full" />
+        <div className="absolute top-[-10%] left-[-10%] w-[70%] h-[40%] bg-blue-600/40 blur-[60px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[10%] right-[-10%] w-[60%] h-[50%] bg-purple-600/35 blur-[60px] rounded-full" />
+        <div className="absolute top-[40%] left-[20%] w-[30%] h-[30%] bg-indigo-500/30 blur-[60px] rounded-full" />
       </div>
 
       {/* Main Content Area (Locked to Mobile Width) */}
@@ -88,7 +88,7 @@ export default function Dashboard() {
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="relative z-10 max-w-md mx-auto px-2 pt-5 pb-24 space-y-7"
+          className="relative z-10 max-w-md mx-auto px-2 pt-5 pb-10 space-y-7"
         >
           {/* Minimalist Apple Header */}
           <header className="flex justify-between items-center mb-2">
@@ -121,14 +121,7 @@ export default function Dashboard() {
             <HistoryList history={history} />
           </section>
 
-          {/* Premium Bottom Tab Bar */}
-          <footer className="fixed bottom-0 left-0 right-0 h-20 bg-black/60 backdrop-blur-3xl border-t border-white/5 flex items-center justify-around px-12 z-50">
-             <div className="p-2 bg-white/5 rounded-2xl border border-white/10">
-               <div className="w-5 h-5 bg-white rounded-md opacity-90 shadow-[0_0_15px_rgba(255,255,255,0.3)]" />
-             </div>
-             <div className="w-5 h-5 rounded-full border-2 border-white/10" />
-             <div className="w-5 h-5 rounded-full border-2 border-white/10" />
-          </footer>
+      
         </motion.div>
       </AnimatePresence>
     </main>
