@@ -88,7 +88,7 @@ export default function Dashboard() {
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="relative z-10 max-w-md mx-auto px-5 pt-8 pb-24 space-y-7"
+          className="relative z-10 max-w-md mx-auto px-2 pt-5 pb-24 space-y-7"
         >
           {/* Minimalist Apple Header */}
           <header className="flex justify-between items-center mb-2">
