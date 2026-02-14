@@ -1,5 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { getSecondsRemaining, getIndianTime } from '../lib/utils';
+
+// ✅ Cache-Busting Headers: Isse browser purana data nahi uthayega
+const HEADERS = {
+  'Cache-Control': 'no-cache, no-store, must-revalidate',
+  'Pragma': 'no-cache',
+  'Expires': '0'
+};
 
 const API_URL = "https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json";
 
@@ -7,92 +14,92 @@ export function useGameLogic() {
   const [history, setHistory] = useState([]);
   const [timeLeft, setTimeLeft] = useState(30);
   const [lastUpdated, setLastUpdated] = useState(null);
-  const [isFetching, setIsFetching] = useState(false);
   const [loading, setLoading] = useState(true);
+  
+  // Ref use karenge taaki infinite loop na ho
+  const latestPeriodRef = useRef(null); 
 
-  // 1. Data Processor (API JSON -> App Format)
-  const processData = useCallback((list) => {
+  // 1. Data Processor (Clean & Simple)
+  const processData = (list) => {
     return list.map(item => ({
-      period: item.issueNumber,
+      period: item.issueNumber.toString(), // String safe rehta hai comparison mein
       number: parseInt(item.number),
       size: parseInt(item.number) <= 4 ? "Small" : "Big",
       color: item.color.includes('green') ? 'G' : (item.color.includes('violet') ? 'V' : 'R'),
       rawColor: item.color,
-      timestamp: Date.now() // For internal sorting if needed
     }));
-  }, []);
+  };
 
-  // 2. Fetch & Merge Logic (The Brain) 🧠
+  // 2. The Fetch Function (Ab ye Ziddi hai) 😤
   const fetchData = useCallback(async () => {
-    setIsFetching(true);
     try {
-      // Cache-busting ke liye timestamp lagaya
-      const res = await fetch(`${API_URL}?ts=${Date.now()}`);
+      // Unique Timestamp + Random Number to break ALL caches
+      const uniqueUrl = `${API_URL}?_=${Date.now()}_${Math.random()}`;
+      
+      const res = await fetch(uniqueUrl, { 
+        headers: HEADERS,
+        cache: 'no-store', // Next.js specific
+        next: { revalidate: 0 } // Server-side specific
+      });
+      
+      if (!res.ok) throw new Error("API Failed");
+
       const json = await res.json();
-      const newData = processData(json.data.list.slice(0, 10)); // Sirf latest 10 lo
+      const apiList = json.data.list.slice(0, 20); // Latest 20 uthao
+      const newData = processData(apiList);
 
-      setHistory(prevHistory => {
-        // Agar pehli baar load ho raha hai
-        if (prevHistory.length === 0) {
-          localStorage.setItem('trackwingo_history', JSON.stringify(newData));
-          return newData;
+      // --- CRITICAL FIX: Direct Update Logic ---
+      setHistory(currentHistory => {
+        // Agar pehli baar hai, to seedha set karo
+        if (currentHistory.length === 0) return newData;
+
+        // Compare: Kya API ka latest period hamare current se naya hai?
+        const apiLatestPeriod = parseInt(newData[0].period);
+        const currentLatestPeriod = parseInt(currentHistory[0].period);
+
+        // Agar API purana data de rahi hai (jo kabhi kabhi hota hai), to update MAT karo
+        if (apiLatestPeriod < currentLatestPeriod) {
+          return currentHistory;
         }
 
-        // --- MERGE LOGIC ---
-        // Naye data mein se wo dhoondo jo hamare paas nahi hai
-        const latestPeriodInState = parseInt(prevHistory[0].period);
-        const newRounds = newData.filter(item => parseInt(item.period) > latestPeriodInState);
-
-        // Agar naya data hai hi nahi, to purana hi rakho
-        if (newRounds.length === 0) return prevHistory;
-
-        // Gap Check: Agar 10 se zyada rounds ka gap hai (User der baad aya)
-        // To purana saaf karo aur naya set karo (Safety Feature)
-        const gap = parseInt(newRounds[0].period) - latestPeriodInState;
-        if (gap > 10) {
-          console.warn("Gap detected, resetting history...");
-          localStorage.setItem('trackwingo_history', JSON.stringify(newData));
-          return newData;
+        // Agar naya data hai, to update karo aur Time bhi update karo
+        if (apiLatestPeriod > currentLatestPeriod) {
+            setLastUpdated(getIndianTime()); // Sirf tab update hoga jab DATA change hoga
+            latestPeriodRef.current = apiLatestPeriod;
+            return newData; // Seedha replace karo taaki sequence (55, 56, 57, 58) sahi rahe
         }
 
-        // Normal Case: Naya data upar jodo
-        const updatedHistory = [...newRounds, ...prevHistory].slice(0, 50); // Max 50 rakho phone ke liye
-        localStorage.setItem('trackwingo_history', JSON.stringify(updatedHistory));
-        return updatedHistory;
+        return currentHistory; // Agar same hai to kuch mat karo
       });
 
-      // Update Time (CBI Enquiry ke liye) 🕵️‍♂️
-      setLastUpdated(getIndianTime());
+      setLoading(false);
 
     } catch (error) {
       console.error("Fetch Error:", error);
-    } finally {
-      setIsFetching(false);
-      setLoading(false);
     }
-  }, [processData]);
+  }, []);
 
-  // 3. Initial Load from Local Storage
-  useEffect(() => {
-    const saved = localStorage.getItem('trackwingo_history');
-    if (saved) {
-      setHistory(JSON.parse(saved));
-      setLoading(false);
-    }
-    fetchData(); // Turant naya data bhi check karo
-  }, [fetchData]);
-
-  // 4. Timer & Auto-Fetch Loop ⏳
+  // 3. Timer & Smart Polling Loop ⏳
   useEffect(() => {
     const timer = setInterval(() => {
       const remaining = getSecondsRemaining();
       setTimeLeft(remaining);
 
-      // Jab timer 1 second par ho, data fetch karo (Result aane wala hota hai)
-      if (remaining === 1 || remaining === 0) {
-        fetchData();
+      // --- SMART LOGIC ---
+      // WinGo result usually 3-4 second late aata hai (0 se -4 tak).
+      // Hum 0, 29 (just before), aur 1, 2, 3, 4, 5 (just after) par aggressive fetch karenge.
+      
+      const criticalPoints = [30, 0, 1, 2, 3, 4, 5]; 
+      // (Note: utils mein 0 = 30 hota hai kabhi kabhi, isliye dono check kiye)
+
+      if (criticalPoints.includes(remaining)) {
+         fetchData();
       }
+
     }, 1000);
+
+    // Initial fetch
+    fetchData();
 
     return () => clearInterval(timer);
   }, [fetchData]);
@@ -101,8 +108,7 @@ export function useGameLogic() {
     history,
     latestResult: history[0],
     timeLeft,
-    lastUpdated,
-    isFetching,
+    lastUpdated, // Ab ye tabhi badlega jab NAYA result aayega
     loading
   };
 }
