@@ -1,76 +1,101 @@
-"use client";
-import React, { useState } from 'react';
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { formatPeriod } from '../lib/utils';
 
-const HistoryList = ({ history }) => {
-  const [displayCount, setDisplayCount] = useState(20);
-
-  // Lazy Loading: और डेटा दिखाने के लिए फंक्शन
-  const loadMore = () => {
-    setDisplayCount(prev => Math.min(prev + 20, 200));
-  };
-
-  const visibleHistory = history.slice(0, displayCount);
+export default function HistoryList({ history }) {
+  
+  if (!history || history.length === 0) {
+    return (
+      <div className="p-8 text-center text-white/20 text-xs font-medium tracking-widest animate-pulse">
+        WAITING FOR SATELLITE DATA...
+      </div>
+    );
+  }
 
   return (
-    <div className="glass-card mt-6 overflow-hidden">
-      <div className="p-4 border-b border-white/5 bg-white/5 flex justify-between items-center">
-        <h3 className="text-sm font-semibold text-white/70">Game History</h3>
-        <span className="text-[10px] bg-white/10 px-2 py-1 rounded-full text-white/40">
-          Showing {visibleHistory.length} of 200
+    <div className="w-full px-1">
+      {/* Section Header */}
+      <div className="flex items-center justify-between mb-3 px-2">
+        <h3 className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] flex items-center gap-2">
+          <span className="w-1 h-1 bg-blue-500 rounded-full"></span>
+          Data Log
+        </h3>
+        <span className="text-[9px] text-white/20 font-mono">
+          STORED: {history.length}
         </span>
       </div>
 
-      <div className="w-full">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-white/30 text-[10px] uppercase tracking-widest border-b border-white/5">
-              <th className="py-4 pl-6 text-left font-medium">Period</th>
-              <th className="py-4 text-center font-medium">Number</th>
-              <th className="py-4 text-center font-medium">Big Small</th>
-              <th className="py-4 pr-6 text-right font-medium">Color</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/5">
-            {visibleHistory.map((item) => (
-              <tr key={item.period} className="group active:bg-white/5 transition-colors">
-                <td className="py-4 pl-6 text-white/60 font-mono text-xs">
-                  {item.period.slice(-4)}
-                </td>
-                <td className="py-4 text-center font-bold text-lg">
-                  {item.number}
-                </td>
-                <td className="py-4 text-center">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
-                    item.size === 'Big' ? 'text-orange-400 bg-orange-400/10' : 'text-blue-400 bg-blue-400/10'
-                  }`}>
-                    {item.size.toUpperCase()}
-                  </span>
-                </td>
-                <td className="py-4 pr-6">
-                  <div className="flex justify-end gap-1">
-                    {/* Color Dots Logic */}
-                    {item.color === 'G' && <div className="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" />}
-                    {item.color === 'R' && <div className="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />}
-                    {item.color === 'V' && <div className="w-3 h-3 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]" />}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* The Glass Container */}
+      <div className="glass-card overflow-hidden relative">
+        
+        {/* Table Header (Sticky) */}
+        <div className="grid grid-cols-4 p-3 bg-white/5 border-b border-white/5 text-[9px] font-bold text-white/40 uppercase tracking-wider backdrop-blur-md sticky top-0 z-10">
+          <div className="text-left pl-2">Period</div>
+          <div className="text-center">Result</div>
+          <div className="text-center">Size</div>
+          <div className="text-right pr-2">Check</div>
+        </div>
 
-        {/* Lazy Loading Button */}
-        {displayCount < 200 && (
-          <button 
-            onClick={loadMore}
-            className="w-full py-4 text-xs font-medium text-blue-400 hover:bg-white/5 transition-all border-t border-white/5"
-          >
-            Load More Results
-          </button>
-        )}
+        {/* Scrollable List Area */}
+        <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
+          <AnimatePresence initial={false}>
+            {history.map((item, index) => (
+              <motion.div
+                key={item.period} // Unique Key is crucial for animation
+                initial={{ opacity: 0, height: 0, x: -20 }}
+                animate={{ opacity: 1, height: 'auto', x: 0 }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className={`
+                  grid grid-cols-4 items-center p-3 border-b border-white/5 last:border-0
+                  hover:bg-white/[0.02] transition-colors
+                  ${index === 0 ? 'bg-blue-500/5' : ''} // Latest row highlight
+                `}
+              >
+                
+                {/* 1. Period ID */}
+                <div className="text-left pl-2 font-mono text-xs text-white/60">
+                  {formatPeriod(item.period)}
+                </div>
+
+                {/* 2. Number Badge */}
+                <div className="flex justify-center">
+                  <span className={`
+                    w-6 h-6 flex items-center justify-center rounded-lg text-xs font-bold shadow-lg
+                    ${item.color === 'G' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 
+                      item.color === 'R' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 
+                      'bg-violet-500/20 text-violet-400 border border-violet-500/30'}
+                  `}>
+                    {item.number}
+                  </span>
+                </div>
+
+                {/* 3. Size Text */}
+                <div className={`text-center text-xs font-bold tracking-tight
+                  ${item.size === 'Big' ? 'text-orange-400' : 'text-blue-400'}
+                `}>
+                  {item.size.toUpperCase()}
+                </div>
+
+                {/* 4. Color Dot (Visual Check) */}
+                <div className="flex justify-end pr-4">
+                  <div className={`
+                    w-2 h-2 rounded-full ring-2 ring-white/5
+                    ${item.color === 'G' ? 'bg-emerald-500' : 
+                      item.color === 'R' ? 'bg-rose-500' : 'bg-violet-500'}
+                  `} />
+                </div>
+
+              </motion.div>
+            ))}
+          </AnimatePresence>
+
+          {/* End of List Indicator */}
+          <div className="p-4 text-center text-[9px] text-white/10 uppercase tracking-widest">
+            — End of Local Record —
+          </div>
+        </div>
       </div>
     </div>
   );
-};
-
-export default HistoryList;
+}
