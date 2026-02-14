@@ -112,24 +112,31 @@ export default function Dashboard() {
               />
             </section>
 
-            {/* C. Live Graph (Trend Visualization) */}
-            <section className="glass-card p-2 mx-1 relative group">
-              {/* Header for Graph */}
-              <div className="flex justify-between items-center mb-2 px-2 pt-2">
-                 <h3 className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] flex items-center gap-2">
-                    <Activity className="w-3 h-3" />
-                    Market Depth (20R)
+                        {/* C. Live Graph (Trend Visualization) */}
+            {/* ✅ Update: p-2 hata diya, ab ye p-0 hai */}
+            <section className="glass-card mx-1 overflow-hidden relative group">
+              
+              {/* Header (Isme padding rakhenge taaki text na chipke) */}
+              <div className="flex justify-between items-center px-4 pt-3 pb-1 relative z-10">
+                 <h3 className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
+                    <Activity className="w-3 h-3 text-blue-400" />
+                    Market Depth
                  </h3>
-                 <span className="text-[9px] px-2 py-0.5 rounded bg-white/5 text-white/30 border border-white/5">
-                    Real-time
+                 <span className="text-[9px] font-mono text-white/20">
+                    LAST 20R
                  </span>
               </div>
               
               {/* The Graph Component */}
-              <div className="h-[200px] w-full">
+              {/* ✅ Height badha kar 220px kar di aur width full */}
+              <div className="h-[220px] w-full -ml-1"> {/* Thoda left pull (-ml-1) taaki gap na dikhe */}
                 <LiveGraph history={history} />
               </div>
+
+              {/* Bottom Gradient Fade (Premium Touch) */}
+              <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
             </section>
+              
 
             {/* D. History List (Detailed Logs) */}
             <section>
