@@ -2,75 +2,86 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ✅ 1. THEME VARIABLES */
+/* ✅ 1. THEME VARIABLES (The Secret Sauce) */
 :root {
-  /* LIGHT MODE (Day - Premium Pearl) */
-  /* User Request: "White jaisa hi mst gradient" */
-  --bg-gradient-start: #ffffff;
-  --bg-gradient-end: #e6e9f0; /* Soft Silver Grey */
+  /* --- LIGHT MODE (Sharp & Clean) --- */
+  /* Background: Subtle Off-White Gradient */
+  --bg-primary: #F2F4F7; 
+  --bg-secondary: #FFFFFF;
   
-  --card-bg: rgba(255, 255, 255, 0.65); /* Thoda zyada transparent */
+  /* Text: Jet Black for readability */
+  --text-main: #111827;       /* Gray-900 */
+  --text-muted: #4B5563;      /* Gray-600 */
+  --text-faint: #9CA3AF;      /* Gray-400 */
+  
+  /* Cards: Solid White with Soft Shadow */
+  --card-bg: rgba(255, 255, 255, 0.85);
   --card-border: rgba(0, 0, 0, 0.08);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   
-  /* Text Colors (Variable Mapping) */
-  --text-primary: #1a1a1a;   /* Near Black for sharpness */
-  --text-secondary: #666666; /* Grey for labels */
+  /* Accents */
+  --accent-pipe: #E5E7EB;     /* Gray-200 for dividers */
 }
 
 .dark {
-  /* DARK MODE (Night - Deep Void) */
-  --bg-gradient-start: #0f172a; /* Slate 900 */
-  --bg-gradient-end: #000000;   /* Pure Black */
+  /* --- DARK MODE (Deep & Glassy) --- */
+  /* Background: Deep Void Black */
+  --bg-primary: #000000;
+  --bg-secondary: #0F172A;
   
+  /* Text: Pure White */
+  --text-main: #FFFFFF;
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --text-faint: rgba(255, 255, 255, 0.3);
+  
+  /* Cards: Glassy Dark */
   --card-bg: rgba(20, 20, 25, 0.6);
   --card-border: rgba(255, 255, 255, 0.1);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-
-  /* Text Colors */
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.6);
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  
+  /* Accents */
+  --accent-pipe: rgba(255, 255, 255, 0.1);
 }
 
-/* ✅ 2. BODY SETUP */
+/* ✅ 2. BODY RESET */
 body {
-  /* The "Mst Gradient" Logic */
-  background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
-  min-height: 100vh;
-  color: var(--text-primary);
+  background: var(--bg-primary);
+  color: var(--text-main);
   transition: background 0.5s ease, color 0.3s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
 @layer components {
-  /* Premium Glass Card */
+  /* The Adaptive Card Class */
   .glass-card {
     background: var(--card-bg);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--card-border);
     border-radius: 24px;
-    box-shadow: var(--glass-shadow);
+    box-shadow: var(--card-shadow);
     transition: all 0.3s ease;
   }
 }
 
-/* ✅ 3. THE "MAGIC FIX" FOR INVISIBLE TEXT */
-/* Isse Light Mode mein 'text-white' apne aap Black ban jayega */
-/* Bina React code chhede */
+/* ✅ 3. THE "ZAHAR" OVERRIDES (Auto-fix for Light Mode) */
 
-:root:not(.dark) .text-white { color: #1a1a1a !important; }
-:root:not(.dark) .text-white\/90 { color: rgba(26,26,26, 0.9) !important; }
-:root:not(.dark) .text-white\/80 { color: rgba(26,26,26, 0.8) !important; }
-:root:not(.dark) .text-white\/60 { color: rgba(26,26,26, 0.6) !important; }
-:root:not(.dark) .text-white\/40 { color: rgba(26,26,26, 0.4) !important; }
-:root:not(.dark) .text-white\/30 { color: rgba(26,26,26, 0.3) !important; }
-:root:not(.dark) .text-white\/20 { color: rgba(26,26,26, 0.2) !important; }
-:root:not(.dark) .text-white\/10 { color: rgba(26,26,26, 0.1) !important; }
+/* Force 'text-white' to become Black in Light Mode */
+:root:not(.dark) .text-white { color: var(--text-main) !important; }
+:root:not(.dark) .text-white\/90 { color: rgba(17, 24, 39, 0.9) !important; }
+:root:not(.dark) .text-white\/80 { color: rgba(17, 24, 39, 0.8) !important; }
+:root:not(.dark) .text-white\/60 { color: var(--text-muted) !important; } /* Muted Grey */
+:root:not(.dark) .text-white\/40 { color: var(--text-faint) !important; }
+:root:not(.dark) .text-white\/30 { color: rgba(156, 163, 175, 0.5) !important; }
+:root:not(.dark) .text-white\/20 { color: rgba(156, 163, 175, 0.3) !important; }
+:root:not(.dark) .text-white\/10 { color: rgba(156, 163, 175, 0.1) !important; }
 
-/* Border Fixes for Light Mode */
+/* Fix Borders & Backgrounds in Light Mode */
 :root:not(.dark) .border-white\/5 { border-color: rgba(0,0,0, 0.05) !important; }
 :root:not(.dark) .border-white\/10 { border-color: rgba(0,0,0, 0.1) !important; }
+:root:not(.dark) .bg-white\/5 { background-color: rgba(0,0,0, 0.03) !important; }
+:root:not(.dark) .bg-white\/10 { background-color: rgba(0,0,0, 0.05) !important; }
+:root:not(.dark) .bg-black\/10 { background-color: rgba(255,255,255, 0.5) !important; } /* Header fix */
 
 /* Scrollbar Hide */
 * { scrollbar-width: none; }
