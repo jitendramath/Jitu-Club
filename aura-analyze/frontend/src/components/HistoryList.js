@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatPeriod } from '../lib/utils';
+import { ChevronDown } from 'lucide-react';
 
 export default function HistoryList({ history }) {
-  
+  const [visibleCount, setVisibleCount] = useState(20); // Shuru mein sirf 20 dikhayenge
+
+  // Load More Logic
+  const handleLoadMore = () => {
+    setVisibleCount(prev => prev + 20); // Har click par 20 aur dikhao
+  };
+
   if (!history || history.length === 0) {
     return (
       <div className="p-8 text-center text-white/20 text-xs font-medium tracking-widest animate-pulse">
@@ -12,8 +19,11 @@ export default function HistoryList({ history }) {
     );
   }
 
+  // Slice data based on visibleCount
+  const visibleHistory = history.slice(0, visibleCount);
+
   return (
-    <div className="w-full px-1">
+    <div className="w-full px-1 mb-8">
       {/* Section Header */}
       <div className="flex items-center justify-between mb-3 px-2">
         <h3 className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] flex items-center gap-2">
@@ -21,35 +31,34 @@ export default function HistoryList({ history }) {
           Data Log
         </h3>
         <span className="text-[9px] text-white/20 font-mono">
-          STORED: {history.length}
+          SHOWING: {visibleHistory.length} / {history.length}
         </span>
       </div>
 
-      {/* The Glass Container */}
+      {/* The Glass Container (Auto Height - No Scroll) */}
       <div className="glass-card overflow-hidden relative">
         
-        {/* Table Header (Sticky) */}
-        <div className="grid grid-cols-4 p-3 bg-white/5 border-b border-white/5 text-[9px] font-bold text-white/40 uppercase tracking-wider backdrop-blur-md sticky top-0 z-10">
+        {/* Table Header */}
+        <div className="grid grid-cols-4 p-3 bg-white/5 border-b border-white/5 text-[9px] font-bold text-white/40 uppercase tracking-wider backdrop-blur-md">
           <div className="text-left pl-2">Period</div>
           <div className="text-center">Result</div>
           <div className="text-center">Size</div>
           <div className="text-right pr-2">Check</div>
         </div>
 
-        {/* Scrollable List Area */}
-        <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
+        {/* List Area */}
+        <div className="w-full"> {/* removed max-h-[300px] and overflow-y-auto */}
           <AnimatePresence initial={false}>
-            {history.map((item, index) => (
+            {visibleHistory.map((item, index) => (
               <motion.div
-                key={item.period} // Unique Key is crucial for animation
-                initial={{ opacity: 0, height: 0, x: -20 }}
-                animate={{ opacity: 1, height: 'auto', x: 0 }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
+                key={item.period} 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
                 className={`
                   grid grid-cols-4 items-center p-3 border-b border-white/5 last:border-0
                   hover:bg-white/[0.02] transition-colors
-                  ${index === 0 ? 'bg-blue-500/5' : ''} // Latest row highlight
+                  ${index === 0 ? 'bg-blue-500/5' : ''} 
                 `}
               >
                 
@@ -77,7 +86,7 @@ export default function HistoryList({ history }) {
                   {item.size.toUpperCase()}
                 </div>
 
-                {/* 4. Color Dot (Visual Check) */}
+                {/* 4. Color Dot */}
                 <div className="flex justify-end pr-4">
                   <div className={`
                     w-2 h-2 rounded-full ring-2 ring-white/5
@@ -89,12 +98,24 @@ export default function HistoryList({ history }) {
               </motion.div>
             ))}
           </AnimatePresence>
-
-          {/* End of List Indicator */}
-          <div className="p-4 text-center text-[9px] text-white/10 uppercase tracking-widest">
-            — End of Local Record —
-          </div>
         </div>
+
+        {/* Load More Button Area */}
+        {history.length > visibleCount && (
+          <div className="p-4 flex justify-center border-t border-white/5 bg-white/[0.02]">
+            <button 
+              onClick={handleLoadMore}
+              className="
+                flex items-center gap-2 px-6 py-2 rounded-full 
+                bg-white/5 hover:bg-white/10 active:scale-95 transition-all
+                border border-white/10 text-[10px] font-bold text-white/60 uppercase tracking-widest
+              "
+            >
+              Load More History <ChevronDown className="w-3 h-3" />
+            </button>
+          </div>
+        )}
+
       </div>
     </div>
   );
