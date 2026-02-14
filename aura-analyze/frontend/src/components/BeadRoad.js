@@ -77,7 +77,7 @@ export default function BeadRoad({ history }) {
                 variants={itemVariants}
                 animate={isLatest ? "pulse" : ""}
                 variants={isLatest ? pulseColumn : itemVariants}
-                className="flex flex-col items-center" 
+                className="flex flex-col items-center gap-0.5" 
               >
                 
                 {/* 1. NUMBER (Bold & Big) */}
@@ -91,7 +91,7 @@ export default function BeadRoad({ history }) {
                 {/* 2. SIZE (Bold - Chipka hua) */}
                 {/* Negative margin-top (-mt-1) se gap kam kiya */}
                 <span className={`
-                  text-lg font-black font-mono leading-none uppercase -mt-1
+                  text-lg font-black font-mono leading-none uppercase
                   ${itemColor}
                 `}>
                   {item.size === 'Big' ? 'B' : 'S'}
